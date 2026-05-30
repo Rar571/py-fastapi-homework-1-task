@@ -1,26 +1,26 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from online_cinema.models import Film
-from online_cinema.schemas import FilmCreate, FilmRead
+from online_cinema.models import  Movie
+from online_cinema.schemas import MovieList, MovieCreate
 from database import get_db
 
 
 router = APIRouter()
 
 
-@router.get("/movies/{film_id}", response_model=FilmRead)
+@router.get("/movies/{movie_id}", response_model=MovieList)
 async def get_film(film_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Film).where(Film.id == film_id))
+    result = await db.execute(select(Movie).where(Movie.id == film_id))
     film = result.scalar_one_or_none()
     if not film:
-        raise HTTPException(status_code=404, detail="Film not found")
+        raise HTTPException(status_code=404, detail="Movie not found")
 
 
-@router.post("/movies/", response_model=FilmRead)
-async def create_film(film: FilmCreate, db: AsyncSession = Depends(get_db)):
-    new_film = Film(**film.model_dump())
-    db.add(new_film)
+@router.post("/movies/", response_model=MovieList)
+async def create_film(movie: MovieCreate, db: AsyncSession = Depends(get_db)):
+    new_movie = Movie(**movie.model_dump())
+    db.add(new_movie)
     await db.commit()
-    await db.refresh(new_film)
-    return new_film
+    await db.refresh(new_movie)
+    return new_movie

@@ -1,17 +1,17 @@
 from pydantic import BaseModel, ConfigDict
 
 
-class FilmBase(BaseModel):
+class MovieBase(BaseModel):
     title: str
     genre: str
     price: float
 
 
-class FilmCreate(FilmBase):
+class MovieCreate(MovieBase):
     pass
 
 
-class FilmRead(FilmBase):
+class MovieList(MovieBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
